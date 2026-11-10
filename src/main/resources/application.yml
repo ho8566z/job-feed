@@ -7,3 +7,8 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+
+# 노션 연동. 비밀값은 환경변수로만 주입한다 (문서에 값을 쓰지 않는다)
+notion:
+  token: ${NOTION_TOKEN:}
+  database-id: ${NOTION_DATABASE_ID:}
