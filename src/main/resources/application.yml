@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: job-feed
+  profiles:
+    default: local
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
