@@ -1,0 +1,9 @@
+# 로컬 개발용: H2 인메모리. MySQL 사용 시 application-mysql.yml 참고
+spring:
+  datasource:
+    url: jdbc:h2:mem:jobfeed;MODE=MySQL
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
