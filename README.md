@@ -1,8 +1,24 @@
 # job-feed
 
-채용공고를 주기적으로 수집해 노션 DB로 전달하는 Spring Boot 서비스 (3차 개인 프로젝트).
+![job-feed 표지](https://raw.githubusercontent.com/ho8566z/job-feed_word/main/images/ppt/cover-banner.png)
+
+채용공고를 주기적으로 수집해 노션 DB로 전달하는 Spring Boot 서비스 (3차 개인 프로젝트, 2026.11).
+
+명세서와 발표 자료는 문서 저장소 [job-feed_word](https://github.com/ho8566z/job-feed_word)에 있습니다.
+
+## 프로젝트 요약
+
+- **해결하려는 문제**: 채용공고가 여러 곳에 흩어져 매일 직접 찾아야 하고, 이미 본 공고를 구분하기 어렵다. 단순 연동은 외부 API의 속도 제한·장애에 취약하다.
+- **핵심 기능**: 수집 스케줄러, 중복 제거, send_log 대기열 전송, 재시도·실패 격리, 노션 상태 보드·마감일순 뷰
+- **기술 스택**: Java 17, Spring Boot, Spring Data JPA, H2·MySQL, 고용24 OPEN-API, Notion API, JUnit
 
 고용24 공채속보 수집(@Scheduled) → (소스, 공고 ID) 기준 중복 제거 → send_log 대기열 → 노션 순차 전송(실패 시 최대 3회 재시도)
+
+## 구조
+
+![서비스 구성도](https://raw.githubusercontent.com/ho8566z/job-feed_word/main/images/ppt/architecture.png)
+
+![ERD](https://raw.githubusercontent.com/ho8566z/job-feed_word/main/images/ppt/erd.png)
 
 ## 동작
 - **수집**: 1시간마다 개발·IT 키워드(개발, IT, 엔지니어, AI, Back-end, 웹, 보안, 정보보호, 시스템, 개발자)로 공채속보를 조회해 합치고, 제목에 제외어(연구개발, 사업개발, 설비, 공정, 정비, 경비, 영업, 마케팅, 사무직)가 있으면 버린다. 제외어 때문에 "영업 시스템 개발" 같은 공고가 빠질 수 있다.
@@ -72,6 +88,10 @@ curl.exe "http://127.0.0.1:8080/api/v1/send-logs?status=FAILED"
 - 소스가 1개라 수집은 순차 실행이다. 동시 저장 시 유니크 위반 처리(건별 건너뛰기)는 미구현이다.
 - 노션에 페이지를 만든 직후 DB 기록이 실패하면 같은 공고가 한 번 더 전송될 수 있다.
 - 호출 한도는 확인하지 못했다. 이용허락(출처표시·상업적 이용금지·변경금지)에 따라 원문 링크를 함께 저장하지만 출처 표기 속성은 따로 없다.
+
+## 문서
+
+- 문서 저장소: [job-feed_word](https://github.com/ho8566z/job-feed_word) (명세서 엑셀 14시트, ERD·다이어그램, 발표 자료 PPT·PDF)
 
 ## 브랜치
 main(안정) ← dev(통합) ← feature/*
