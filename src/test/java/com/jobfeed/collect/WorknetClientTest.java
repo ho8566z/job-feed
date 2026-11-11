@@ -72,6 +72,18 @@ class WorknetClientTest {
     }
 
     @Test
+    void Content_Type에_charset이_없어도_한글이_깨지지_않는다() {
+        // charset 없는 application/xml. 문자열로 받으면 ISO-8859-1로 풀려 한글이 깨진다.
+        server.expect(requestTo(containsString("empWantedTitle=")))
+                .andRespond(withSuccess(SAMPLE, MediaType.APPLICATION_XML));
+
+        WorknetClient.Page page = client.search("개발", 1);
+
+        assertThat(page.items().get(0).title()).isEqualTo("2026년 하반기 대졸 신입사원 모집");
+        assertThat(page.items().get(0).company()).isEqualTo("삼원강재");
+    }
+
+    @Test
     void 오류_응답은_예외로_바꾼다() {
         String error = "<?xml version='1.0' encoding='UTF-8'?><GO24><error>인증키가 존재하지 않습니다</error></GO24>";
 
