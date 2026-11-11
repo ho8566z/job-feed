@@ -8,6 +8,10 @@ spring:
       ddl-auto: update
     open-in-view: false
 
+# 내부 API(/api/v1/**)에는 인증이 없으므로 이 PC에서만 접근하게 묶는다(외부 공개 금지).
+server:
+  address: 127.0.0.1
+
 # 스케줄. 수집은 1시간마다, 전송은 1분마다 실행한다(앞 실행이 끝난 뒤 기준).
 # send.interval-ms는 전송할 때 건 사이 간격이고, send.delay-ms는 전송 실행 주기이다.
 app:

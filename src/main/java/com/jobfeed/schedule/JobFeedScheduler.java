@@ -1,5 +1,6 @@
 package com.jobfeed.schedule;
 
+import com.jobfeed.collect.CollectInProgressException;
 import com.jobfeed.collect.CollectService;
 import com.jobfeed.collect.JobStoreService;
 import com.jobfeed.collect.WorknetProperties;
@@ -42,6 +43,8 @@ public class JobFeedScheduler {
         try {
             JobStoreService.StoreResult result = collectService.run();
             log.info("수집 완료: 입력 {}건, 신규 {}건", result.received(), result.saved());
+        } catch (CollectInProgressException e) {
+            log.info("이미 수집 중이라 이번 수집은 건너뜁니다.");
         } catch (RuntimeException e) {
             log.error("수집 실패: {}", e.getMessage());
         }
