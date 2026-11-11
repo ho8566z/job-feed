@@ -41,3 +41,7 @@ out/
 .env.*
 application-secret*.yml
 application-*.secret.yml
+### 로컬 DB 파일(file 프로필, 공고 데이터) ###
+/data/
+*.mv.db
+*.trace.db
