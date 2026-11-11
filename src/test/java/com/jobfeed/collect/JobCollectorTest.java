@@ -53,6 +53,49 @@ class JobCollectorTest {
     }
 
     @Test
+    void 기본_제외어는_실제_수집_결과의_오탐을_거르고_개발_공고는_남긴다() {
+        // 2026-11-11 실제 수집 결과 21건의 제목. 앞의 7건은 개발과 무관하고 나머지 14건은 남아야 한다.
+        List<String> unrelated = List.of(
+                "신입/경력 채용(Global/관리/마케팅/영업/디자인/개발 등 모집)",
+                "11월 사무직 수시채용(개발팀, 설계공법팀)",
+                "지게차 정비 및 순회관리자(MHE엔지니어) 채용",
+                "신입사원 수시채용 [설비엔지니어(계기), 구매]",
+                "[신입] 송도2공장 공정엔지니어 채용(~11/11)",
+                "2026년 제37회 정규직 보안경비원 직원 모집 공고",
+                "웹 서비스 영업/마케팅(신입)");
+        List<String> related = List.of(
+                "웹 서비스(Back-end, Front-end) 개발 및 운영(신입/경력)",
+                "[AI 개발] AI 에이전트 개발자 경력 추가 채용",
+                "[신입] CGMS 알고리즘 개발 채용(~11/11)",
+                "2026년 하반기 신입사원 정기채용(IT)",
+                "IT 인프라/네트워크 담당 경력직 채용",
+                "[IT솔루션팀] Platform Operations_인턴(체험형)",
+                "본사 : 정보보호/IT운영 신입/경력 채용",
+                "경영지원부문 IT AI 엔지니어 채용",
+                "[신입] [채용연계형] 클라우드 엔지니어(클라우드 시스템 구축/운영)",
+                "2026년 하반기 AI Director 신입사원 채용",
+                "청년인턴(AI 인재양성 전형) 채용공고",
+                "웹 기획자 경력직 채용",
+                "2026년 5차 수시채용_정보보안(팀원) 부문",
+                "정보보안전문가(전문계약직) 공개채용 공고");
+        List<CollectedJob> all = new ArrayList<>();
+        int id = 0;
+        for (String title : unrelated) {
+            all.add(job(String.valueOf(++id), title));
+        }
+        for (String title : related) {
+            all.add(job(String.valueOf(++id), title));
+        }
+        // 제외어를 지정하지 않으면 기본값이 적용된다
+        WorknetProperties props = new WorknetProperties("key", null, List.of("개발"), null, 100, 5);
+        FakeClient client = new FakeClient(props, Map.of("개발", List.of(new WorknetClient.Page(all.size(), all))));
+
+        List<CollectedJob> result = new JobCollector(client, props).collect();
+
+        assertThat(result).extracting(CollectedJob::title).containsExactlyElementsOf(related);
+    }
+
+    @Test
     void 전체_건수까지_페이지를_넘겨_가져온다() {
         WorknetProperties props = props(List.of("개발"), 2, 5);
         FakeClient client = new FakeClient(props, Map.of(
