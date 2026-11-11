@@ -1,5 +1,6 @@
 package com.jobfeed.collect;
 
+import com.jobfeed.common.Kst;
 import com.jobfeed.job.Job;
 import com.jobfeed.job.JobRepository;
 import com.jobfeed.sendlog.SendLog;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +92,7 @@ public class JobStoreService {
                 saved++;
             }
         }
-        source.markCollected(LocalDateTime.now());
+        source.markCollected(Kst.now());
         log.info("공고 저장: 입력 {}건, 신규 {}건", collected.size(), saved);
         return new StoreResult(collected.size(), saved);
     }
