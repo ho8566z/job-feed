@@ -1,5 +1,6 @@
 package com.jobfeed.job;
 
+import com.jobfeed.common.Kst;
 import com.jobfeed.source.Source;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -56,6 +57,6 @@ public class Job {
         this.region = region;
         this.deadline = deadline;
         this.source = source;
-        this.collectedAt = LocalDateTime.now();
+        this.collectedAt = Kst.now();
     }
 }
