@@ -14,8 +14,9 @@ import org.xml.sax.InputSource;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -50,12 +51,13 @@ public class WorknetClient {
         if (!properties.isConfigured()) {
             throw new IllegalStateException("WORKNET_API_KEY가 설정되지 않았습니다.");
         }
-        String xml;
+        byte[] xml;
         try {
+            // Content-Type에 charset이 없으면 문자열로 받을 때 한글이 깨지므로 바이트로 받아 XML 선언의 인코딩을 따른다.
             xml = restClient.get()
                     .uri(buildUri(keyword, startPage))
                     .retrieve()
-                    .body(String.class);
+                    .body(byte[].class);
         } catch (RestClientResponseException e) {
             throw new WorknetApiException(e.getStatusCode().value(),
                     "고용24 API 오류 " + e.getStatusCode().value());
@@ -84,7 +86,11 @@ public class WorknetClient {
     }
 
     static Page parse(String xml) {
-        if (xml == null || xml.isBlank()) {
+        return parse(xml == null ? null : xml.getBytes(StandardCharsets.UTF_8));
+    }
+
+    static Page parse(byte[] xml) {
+        if (xml == null || xml.length == 0 || new String(xml, StandardCharsets.UTF_8).isBlank()) {
             throw new WorknetApiException(200, "고용24 응답이 비어 있습니다.");
         }
         Element root = readRoot(xml);
@@ -115,14 +121,14 @@ public class WorknetClient {
         return new Page(total, items);
     }
 
-    private static Element readRoot(String xml) {
+    private static Element readRoot(byte[] xml) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             factory.setXIncludeAware(false);
             factory.setExpandEntityReferences(false);
-            Document doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+            Document doc = factory.newDocumentBuilder().parse(new InputSource(new ByteArrayInputStream(xml)));
             return doc.getDocumentElement();
         } catch (Exception e) {
             throw new WorknetApiException(200, "고용24 응답을 해석하지 못했습니다: " + e.getClass().getSimpleName());
