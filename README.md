@@ -32,7 +32,8 @@
 노션 DB 속성 이름은 코드와 정확히 같아야 한다: 회사(제목), 직무(텍스트), 지역(선택), 마감일(날짜), 수집일(날짜), 링크(URL), 상태(선택, 값 "신규").
 
 ## 실행
-- 기본(local): H2 인메모리 — `./gradlew bootRun` (앱을 끄면 데이터가 사라지고 다시 켜면 같은 공고가 새 공고로 처리된다)
+- **file(실제 사용 권장)**: H2 파일 DB — `./gradlew bootRun --args="--spring.profiles.active=file"`. 앱을 껐다 켜도 공고와 전송 대기열이 남아 노션에 중복 전송되지 않는다. 데이터는 `./data/jobfeed.mv.db`(실행 폴더 기준)에 저장되고 환경변수 `JOBFEED_DATA_DIR`로 위치를 바꿀 수 있다. 같은 파일을 두 프로세스가 동시에 열 수 없으므로 앱은 한 번에 하나만 실행한다.
+- 기본(local): H2 인메모리 — `./gradlew bootRun` (앱을 끄면 데이터가 사라지고 다시 켜면 같은 공고가 새 공고로 처리된다. 개발·테스트용)
 - MySQL: `--spring.profiles.active=mysql` + 환경변수 `DB_USERNAME`, `DB_PASSWORD`(선택 `DB_URL`)
 - 시작 10초 뒤 첫 수집, 20초 뒤 첫 전송이 실행된다.
 
