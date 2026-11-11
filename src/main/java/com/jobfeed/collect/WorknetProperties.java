@@ -24,7 +24,9 @@ public record WorknetProperties(
 
     static final List<String> DEFAULT_KEYWORDS = List.of(
             "개발", "IT", "엔지니어", "AI", "Back-end", "웹", "보안", "정보보호", "시스템", "개발자");
-    static final List<String> DEFAULT_EXCLUDE_WORDS = List.of("연구개발", "사업개발");
+    // 11/11 실제 수집 결과(21건)에서 개발과 무관한 공고가 절반가량이라 넓은 키워드("엔지니어", "보안")의 오탐을 거른다.
+    static final List<String> DEFAULT_EXCLUDE_WORDS = List.of(
+            "연구개발", "사업개발", "설비", "공정", "정비", "경비", "영업", "마케팅", "사무직");
 
     public WorknetProperties {
         if (url == null || url.isBlank()) {
