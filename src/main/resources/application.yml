@@ -8,6 +8,10 @@ spring:
       ddl-auto: update
     open-in-view: false
 
+# 고용24 공채속보. 인증키는 환경변수로만 주입한다. 키워드·제외어는 WorknetProperties 기본값 사용
+worknet:
+  api-key: ${WORKNET_API_KEY:}
+
 # 노션 연동. 비밀값은 환경변수로만 주입한다 (문서에 값을 쓰지 않는다)
 notion:
   token: ${NOTION_TOKEN:}
