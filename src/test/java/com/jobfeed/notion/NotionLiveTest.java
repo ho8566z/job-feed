@@ -37,6 +37,7 @@ class NotionLiveTest {
         NotionClient client = new NotionClient(RestClient.builder().requestFactory(factory).build(), props);
 
         Job job = Job.builder()
+                .externalId("live-test")
                 .url("https://example.com/job-feed-live-test/" + System.currentTimeMillis())
                 .company("[테스트] job-feed 연동 확인")
                 .title("노션 연동 테스트 페이지 (삭제해도 됨)")

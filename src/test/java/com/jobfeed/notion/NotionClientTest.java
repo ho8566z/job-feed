@@ -41,6 +41,7 @@ class NotionClientTest {
 
     private Job sampleJob() {
         return Job.builder()
+                .externalId("1")
                 .url("https://example.com/jobs/1")
                 .company("테스트회사")
                 .title("백엔드 개발자")
@@ -71,7 +72,7 @@ class NotionClientTest {
 
     @Test
     void 지역과_마감일이_없으면_속성을_보내지_않는다() {
-        Job job = Job.builder().url("https://example.com/jobs/2").company("회사").title("직무").build();
+        Job job = Job.builder().externalId("2").url("https://example.com/jobs/2").company("회사").title("직무").build();
 
         assertThat(client.buildBody(job).toString())
                 .doesNotContain(NotionClient.PROP_REGION)
