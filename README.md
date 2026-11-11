@@ -46,6 +46,20 @@
 | `app.send.interval-ms` | 400 | 전송할 때 건 사이 간격 |
 | `worknet.keywords`, `worknet.exclude-words` | 위 동작 참고 | 제목 검색 키워드와 제외어 |
 
+## 내부 API (시연·점검용)
+인증이 없어 서버를 `127.0.0.1`에만 묶어 두었다. 외부에 공개하지 않는다.
+
+| 요청 | 설명 |
+|---|---|
+| `POST /api/v1/collect` | 수집을 즉시 한 번 실행하고 `{"sources":[{"name","fetched","created","duplicated"}]}`를 돌려준다. 이미 수집 중이면 409, 수집 실패나 인증키 없음이면 500 |
+| `GET /api/v1/send-logs?status=&page=&size=` | 전송 상태별 건수(`counts`)와 목록(`items`, 최신순). `status`는 PENDING/SUCCESS/FAILED(생략 시 전체), `size` 기본 20·최대 100. 잘못된 값은 400 |
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8080/api/v1/collect
+curl.exe "http://127.0.0.1:8080/api/v1/send-logs?status=FAILED"
+```
+수동 수집으로 쌓인 공고는 전송 스케줄러가 1분 안에 노션으로 보낸다.
+
 ## 테스트
 - `./gradlew test` — 외부 호출 없이 실행된다. 실제 호출 테스트는 환경변수가 없으면 건너뛴다.
 - 실제 고용24 호출: `./gradlew test --tests "*WorknetLiveTest" -i` (`WORKNET_API_KEY` 필요, 호출 한도를 쓴다)
