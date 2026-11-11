@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: job-feed
+  profiles:
+    default: local
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+# 내부 API(/api/v1/**)에는 인증이 없으므로 이 PC에서만 접근하게 묶는다(외부 공개 금지).
+server:
+  address: 127.0.0.1
+
+# 스케줄. 수집은 1시간마다, 전송은 1분마다 실행한다(앞 실행이 끝난 뒤 기준).
+# send.interval-ms는 전송할 때 건 사이 간격이고, send.delay-ms는 전송 실행 주기이다.
+app:
+  scheduling:
+    enabled: true
+  collect:
+    delay-ms: 3600000
+  send:
+    batch-size: 10
+    interval-ms: 400
+    delay-ms: 60000
+
+# 고용24 공채속보. 인증키는 환경변수로만 주입한다. 키워드·제외어는 WorknetProperties 기본값 사용
+worknet:
+  api-key: ${WORKNET_API_KEY:}
+
+# 노션 연동. 비밀값은 환경변수로만 주입한다 (문서에 값을 쓰지 않는다)
+notion:
+  token: ${NOTION_TOKEN:}
+  database-id: ${NOTION_DATABASE_ID:}

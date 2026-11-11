@@ -1,0 +1,9 @@
+# 개인 사용 권장: H2 파일 DB. 앱을 껐다 켜도 공고와 전송 대기열이 남아 노션에 중복 전송되지 않는다.
+# 실행: --spring.profiles.active=file
+# 저장 위치는 기본 ./data(실행 폴더 기준)이고 환경변수 JOBFEED_DATA_DIR로 바꿀 수 있다.
+# 같은 파일을 두 프로세스가 동시에 열 수 없으므로 앱은 한 번에 하나만 실행한다.
+spring:
+  datasource:
+    url: jdbc:h2:file:${JOBFEED_DATA_DIR:./data}/jobfeed;MODE=MySQL
+    username: sa
+    password:
