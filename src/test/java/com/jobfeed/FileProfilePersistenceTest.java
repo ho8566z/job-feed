@@ -5,6 +5,7 @@ import com.jobfeed.collect.JobStoreService;
 import com.jobfeed.job.JobRepository;
 import com.jobfeed.sendlog.SendLogRepository;
 import com.jobfeed.sendlog.SendStatus;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.SpringApplication;
@@ -38,6 +39,7 @@ class FileProfilePersistenceTest {
     }
 
     @Test
+    @DisplayName("앱을 껐다 켜도 공고와 전송 대기열이 남고 같은 공고는 다시 저장하지 않는다")
     void 앱을_껐다_켜도_공고와_전송_대기열이_남고_같은_공고는_다시_저장하지_않는다() {
         try (ConfigurableApplicationContext first = start()) {
             JobStoreService.StoreResult saved = first.getBean(JobStoreService.class).store(List.of(job("1"), job("2")));

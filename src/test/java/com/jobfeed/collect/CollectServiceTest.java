@@ -1,5 +1,6 @@
 package com.jobfeed.collect;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -49,6 +50,7 @@ class CollectServiceTest {
     }
 
     @Test
+    @DisplayName("수집 중에는 새 수집을 시작하지 않고 끝나면 다시 실행할 수 있다")
     void 수집_중에는_새_수집을_시작하지_않고_끝나면_다시_실행할_수_있다() throws Exception {
         BlockingCollector collector = new BlockingCollector();
         CollectService service = new CollectService(collector, new FakeStore());
@@ -70,6 +72,7 @@ class CollectServiceTest {
     }
 
     @Test
+    @DisplayName("수집이 실패해도 플래그가 풀려 다음 수집이 가능하다")
     void 수집이_실패해도_플래그가_풀려_다음_수집이_가능하다() {
         JobCollector failing = new JobCollector(null, PROPS) {
             @Override

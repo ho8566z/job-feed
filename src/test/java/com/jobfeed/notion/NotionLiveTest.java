@@ -2,6 +2,7 @@ package com.jobfeed.notion;
 
 import com.jobfeed.job.Job;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class NotionLiveTest {
 
     @Test
+    @DisplayName("공고 DB에 테스트 페이지 1건 생성")
     void 공고_DB에_테스트_페이지_1건_생성() {
         NotionProperties props = new NotionProperties(
                 System.getenv("NOTION_TOKEN"), System.getenv("NOTION_DATABASE_ID"), null, null);

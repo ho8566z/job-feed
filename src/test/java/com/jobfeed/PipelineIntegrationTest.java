@@ -16,6 +16,7 @@ import com.jobfeed.source.SourceRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -171,6 +172,7 @@ class PipelineIntegrationTest {
     // ---- 시나리오 ----
 
     @Test
+    @DisplayName("수집부터 전송까지 정상 흐름")
     void 수집부터_전송까지_정상_흐름() {
         // 1과 2는 같은 URL(회사 공통 페이지), 2는 두 키워드에 모두 나오고, 4는 제외어(영업) 때문에 버려진다.
         String common = "https://example.com/common";
@@ -195,6 +197,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("같은 공고를 다시 수집하면 저장도 전송도 하지 않는다")
     void 같은_공고를_다시_수집하면_저장도_전송도_하지_않는다() {
         collect(xml(item("1", "백엔드 개발자")), xml());
         notionOk("page-1");
@@ -211,6 +214,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("노션 장애가 반복되면 세 번째에 FAILED가 되고 수집은 계속된다")
     void 노션_장애가_반복되면_세_번째에_FAILED가_되고_수집은_계속된다() {
         collect(xml(item("1", "백엔드 개발자")), xml());
 
@@ -239,6 +243,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("노션이 429면 멈추고 복구되면 남은 건을 이어서 보낸다")
     void 노션이_429면_멈추고_복구되면_남은_건을_이어서_보낸다() {
         collect(xml(item("1", "a 개발"), item("2", "b 개발"), item("3", "c 개발")), xml());
 
@@ -264,6 +269,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("한 건만 400이면 나머지는 성공하고 그 건은 재시도 대상으로 남는다")
     void 한_건만_400이면_나머지는_성공하고_그_건은_재시도_대상으로_남는다() {
         collect(xml(item("1", "a 개발"), item("2", "b 개발"), item("3", "c 개발")), xml());
 
@@ -280,6 +286,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("고용24 키워드 하나가 장애여도 나머지 결과는 저장한다")
     void 고용24_키워드_하나가_장애여도_나머지_결과는_저장한다() {
         worknetFails("%EA%B0%9C%EB%B0%9C", HttpStatus.INTERNAL_SERVER_ERROR);
         worknetReturns("IT", xml(item("3", "IT 운영")));
@@ -291,6 +298,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("고용24가 전부 장애면 예외를 던지고 아무것도 저장하지 않는다")
     void 고용24가_전부_장애면_예외를_던지고_아무것도_저장하지_않는다() {
         worknetFails("%EA%B0%9C%EB%B0%9C", HttpStatus.INTERNAL_SERVER_ERROR);
         worknetFails("IT", HttpStatus.BAD_GATEWAY);
@@ -303,6 +311,7 @@ class PipelineIntegrationTest {
     }
 
     @Test
+    @DisplayName("고용24 인증키 오류 응답이면 예외를 던진다")
     void 고용24_인증키_오류_응답이면_예외를_던진다() {
         String error = "<?xml version='1.0' encoding='UTF-8'?><GO24><error>인증키가 존재하지 않습니다</error></GO24>";
         worknetReturns("%EA%B0%9C%EB%B0%9C", error);

@@ -4,6 +4,7 @@ import com.jobfeed.collect.CollectService;
 import com.jobfeed.collect.JobStoreService;
 import com.jobfeed.collect.WorknetProperties;
 import com.jobfeed.sendlog.SendService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +53,7 @@ class JobFeedSchedulerTest {
     }
 
     @Test
+    @DisplayName("인증키가 있으면 수집을 실행한다")
     void 인증키가_있으면_수집을_실행한다() {
         FakeCollect collect = new FakeCollect();
 
@@ -61,6 +63,7 @@ class JobFeedSchedulerTest {
     }
 
     @Test
+    @DisplayName("인증키가 없으면 수집을 건너뛴다")
     void 인증키가_없으면_수집을_건너뛴다() {
         FakeCollect collect = new FakeCollect();
 
@@ -70,6 +73,7 @@ class JobFeedSchedulerTest {
     }
 
     @Test
+    @DisplayName("수집이 실패해도 예외를 밖으로 던지지 않는다")
     void 수집이_실패해도_예외를_밖으로_던지지_않는다() {
         FakeCollect collect = new FakeCollect();
         collect.error = new IllegalStateException("boom");
@@ -82,6 +86,7 @@ class JobFeedSchedulerTest {
     }
 
     @Test
+    @DisplayName("전송이 실패해도 예외를 밖으로 던지지 않는다")
     void 전송이_실패해도_예외를_밖으로_던지지_않는다() {
         FakeSend send = new FakeSend();
         send.error = new IllegalStateException("boom");

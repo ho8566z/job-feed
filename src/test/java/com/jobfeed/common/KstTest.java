@@ -1,6 +1,7 @@
 package com.jobfeed.common;
 
 import com.jobfeed.job.Job;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -12,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class KstTest {
 
     @Test
+    @DisplayName("서버 기본 시간대가 달라도 수집 시각은 한국 시간이다")
     void 서버_기본_시간대가_달라도_수집_시각은_한국_시간이다() {
         TimeZone original = TimeZone.getDefault();
         try {
