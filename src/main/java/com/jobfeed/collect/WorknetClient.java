@@ -1,7 +1,6 @@
 package com.jobfeed.collect;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
@@ -28,9 +27,8 @@ import java.util.Map;
  * 고용24 공채속보 목록 API를 호출해 공고를 정규화한다.
  * 응답에는 근무지역·직무 필드가 없어 region은 항상 null이다.
  */
+@Slf4j
 public class WorknetClient {
-
-    private static final Logger log = LoggerFactory.getLogger(WorknetClient.class);
 
     private static final String ROOT_LIST = "dhsOpenEmpInfoList";
     private static final String ROOT_ERROR = "GO24";
