@@ -5,6 +5,7 @@ import com.jobfeed.collect.JobStoreService;
 import com.jobfeed.sendlog.SendLog;
 import com.jobfeed.sendlog.SendLogQueryService;
 import com.jobfeed.sendlog.SendStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class OpsController {
 
     static final int DEFAULT_SIZE = 20;
@@ -33,11 +35,6 @@ public class OpsController {
 
     private final CollectService collectService;
     private final SendLogQueryService sendLogQueryService;
-
-    public OpsController(CollectService collectService, SendLogQueryService sendLogQueryService) {
-        this.collectService = collectService;
-        this.sendLogQueryService = sendLogQueryService;
-    }
 
     public record SourceResult(String name, int fetched, int created, int duplicated) {
     }

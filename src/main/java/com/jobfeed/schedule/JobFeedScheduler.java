@@ -5,6 +5,7 @@ import com.jobfeed.collect.CollectService;
 import com.jobfeed.collect.JobStoreService;
 import com.jobfeed.collect.WorknetProperties;
 import com.jobfeed.sendlog.SendService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,18 +19,12 @@ import org.springframework.stereotype.Component;
 @Component
 @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 @Slf4j
+@RequiredArgsConstructor
 public class JobFeedScheduler {
 
     private final CollectService collectService;
     private final SendService sendService;
     private final WorknetProperties worknetProperties;
-
-    public JobFeedScheduler(CollectService collectService, SendService sendService,
-                            WorknetProperties worknetProperties) {
-        this.collectService = collectService;
-        this.sendService = sendService;
-        this.worknetProperties = worknetProperties;
-    }
 
     @Scheduled(initialDelayString = "${app.collect.initial-delay-ms:10000}",
             fixedDelayString = "${app.collect.delay-ms:3600000}")
