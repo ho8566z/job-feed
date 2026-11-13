@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,11 +18,13 @@ public class SendLogQueryService {
 
     private final SendLogRepository sendLogRepository;
 
-    /** status가 null이면 전체를 최신 id 순서가 담긴 pageable대로 돌려준다. */
-    public Page<SendLog> findLogs(SendStatus status, Pageable pageable) {
-        return status == null
+    /** status가 null이면 전체를 pageable 순서대로 돌려준다. 엔티티는 여기서 응답용 항목으로 바꾼다. */
+    @Transactional(readOnly = true)
+    public Page<SendLogItem> findItems(SendStatus status, Pageable pageable) {
+        Page<SendLog> logs = status == null
                 ? sendLogRepository.findAll(pageable)
                 : sendLogRepository.findByStatus(status, pageable);
+        return logs.map(SendLogItem::from);
     }
 
     /** 전송 상태별 건수. */

@@ -2,7 +2,7 @@ package com.jobfeed.api;
 
 import com.jobfeed.collect.CollectService;
 import com.jobfeed.collect.JobStoreService;
-import com.jobfeed.sendlog.SendLog;
+import com.jobfeed.sendlog.SendLogItem;
 import com.jobfeed.sendlog.SendLogQueryService;
 import com.jobfeed.sendlog.SendStatus;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class OpsController {
+public class OpsApiController {
 
     static final int DEFAULT_SIZE = 20;
     static final int MAX_SIZE = 100;
@@ -40,10 +40,6 @@ public class OpsController {
     }
 
     public record CollectResponse(List<SourceResult> sources) {
-    }
-
-    public record SendLogItem(Long id, String company, String title, SendStatus status,
-                              int retryCount, String lastError, String notionPageId) {
     }
 
     public record SendLogResponse(Map<String, Long> counts, List<SendLogItem> items,
@@ -73,14 +69,10 @@ public class OpsController {
         pageSize = Math.min(pageSize, MAX_SIZE);
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<SendLog> result = sendLogQueryService.findLogs(
+        Page<SendLogItem> result = sendLogQueryService.findItems(
                 status == null || status.isBlank() ? null : parseStatus(status), pageable);
         Map<String, Long> counts = sendLogQueryService.countByStatus();
-        List<SendLogItem> items = result.getContent().stream()
-                .map(l -> new SendLogItem(l.getId(), l.getJob().getCompany(), l.getJob().getTitle(),
-                        l.getStatus(), l.getRetryCount(), l.getLastError(), l.getNotionPageId()))
-                .toList();
-        return new SendLogResponse(counts, items, result.getNumber(), result.getSize(),
+        return new SendLogResponse(counts, result.getContent(), result.getNumber(), result.getSize(),
                 result.getTotalElements(), result.getTotalPages());
     }
 
