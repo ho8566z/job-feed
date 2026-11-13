@@ -6,10 +6,10 @@ import com.jobfeed.job.Job;
 import com.jobfeed.notion.NotionApiException;
 import com.jobfeed.notion.NotionClient;
 import com.jobfeed.notion.NotionProperties;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,18 +29,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 @Import(JobStoreService.class)
+@RequiredArgsConstructor
 class SendServiceTest {
 
-    @Autowired
-    JobStoreService storeService;
-    @Autowired
-    SendLogRepository sendLogRepository;
-    @Autowired
-    com.jobfeed.job.JobRepository jobRepository;
-    @Autowired
-    com.jobfeed.source.SourceRepository sourceRepository;
-    @Autowired
-    PlatformTransactionManager transactionManager;
+    private final JobStoreService storeService;
+    private final SendLogRepository sendLogRepository;
+    private final com.jobfeed.job.JobRepository jobRepository;
+    private final com.jobfeed.source.SourceRepository sourceRepository;
+    private final PlatformTransactionManager transactionManager;
 
     /** 호출마다 미리 정한 결과(page id 또는 예외)를 순서대로 돌려주는 가짜 노션 클라이언트 */
     private static class FakeNotion extends NotionClient {

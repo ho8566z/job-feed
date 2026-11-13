@@ -7,8 +7,8 @@ import com.jobfeed.sendlog.SendLogRepository;
 import com.jobfeed.sendlog.SendStatus;
 import com.jobfeed.source.Source;
 import com.jobfeed.source.SourceRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
@@ -20,16 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(JobStoreService.class)
+@RequiredArgsConstructor
 class JobStoreServiceTest {
 
-    @Autowired
-    JobStoreService service;
-    @Autowired
-    JobRepository jobRepository;
-    @Autowired
-    SendLogRepository sendLogRepository;
-    @Autowired
-    SourceRepository sourceRepository;
+    private final JobStoreService service;
+    private final JobRepository jobRepository;
+    private final SendLogRepository sendLogRepository;
+    private final SourceRepository sourceRepository;
 
     private static CollectedJob job(String id) {
         return new CollectedJob(id, "회사" + id, "백엔드 개발자 " + id, null,

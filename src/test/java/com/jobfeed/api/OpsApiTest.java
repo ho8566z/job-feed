@@ -8,10 +8,10 @@ import com.jobfeed.collect.WorknetApiException;
 import com.jobfeed.job.JobRepository;
 import com.jobfeed.sendlog.SendLogRepository;
 import com.jobfeed.source.SourceRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 내부 API(수동 수집, 전송 현황)를 H2 DB와 함께 확인한다. 수집 호출만 가짜로 바꾼다.
  */
 @SpringBootTest(properties = "app.scheduling.enabled=false")
+@RequiredArgsConstructor
 class OpsApiTest {
 
     /** run() 결과나 예외를 미리 정해 두는 가짜 수집 서비스 */
@@ -51,16 +52,11 @@ class OpsApiTest {
         }
     }
 
-    @Autowired
-    JobStoreService storeService;
-    @Autowired
-    SendLogRepository sendLogRepository;
-    @Autowired
-    JobRepository jobRepository;
-    @Autowired
-    SourceRepository sourceRepository;
-    @Autowired
-    PlatformTransactionManager transactionManager;
+    private final JobStoreService storeService;
+    private final SendLogRepository sendLogRepository;
+    private final JobRepository jobRepository;
+    private final SourceRepository sourceRepository;
+    private final PlatformTransactionManager transactionManager;
 
     private FakeCollect collect;
     private MockMvc mockMvc;
