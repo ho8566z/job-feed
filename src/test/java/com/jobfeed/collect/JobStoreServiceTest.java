@@ -8,6 +8,7 @@ import com.jobfeed.sendlog.SendStatus;
 import com.jobfeed.source.Source;
 import com.jobfeed.source.SourceRepository;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -34,6 +35,7 @@ class JobStoreServiceTest {
     }
 
     @Test
+    @DisplayName("새 공고는 job과 PENDING send log로 저장한다")
     void 새_공고는_job과_PENDING_send_log로_저장한다() {
         JobStoreService.StoreResult result = service.store(List.of(job("1"), job("2")));
 
@@ -54,6 +56,7 @@ class JobStoreServiceTest {
     }
 
     @Test
+    @DisplayName("이미 저장한 공고는 다시 저장하지 않는다")
     void 이미_저장한_공고는_다시_저장하지_않는다() {
         service.store(List.of(job("1"), job("2")));
 
@@ -66,6 +69,7 @@ class JobStoreServiceTest {
     }
 
     @Test
+    @DisplayName("입력 안의 중복도 한 건으로 본다")
     void 입력_안의_중복도_한_건으로_본다() {
         JobStoreService.StoreResult result = service.store(List.of(job("1"), job("1")));
 
@@ -73,6 +77,7 @@ class JobStoreServiceTest {
     }
 
     @Test
+    @DisplayName("URL이 같아도 external id가 다르면 다른 공고다")
     void URL이_같아도_external_id가_다르면_다른_공고다() {
         CollectedJob a = new CollectedJob("1", "A사", "공고 A", null, null, "https://example.com/common");
         CollectedJob b = new CollectedJob("2", "B사", "공고 B", null, null, "https://example.com/common");
@@ -81,6 +86,7 @@ class JobStoreServiceTest {
     }
 
     @Test
+    @DisplayName("긴 제목은 컬럼 길이에 맞춰 자르고 너무 긴 URL은 건너뛴다")
     void 긴_제목은_컬럼_길이에_맞춰_자르고_너무_긴_URL은_건너뛴다() {
         CollectedJob longTitle = new CollectedJob("1", "회사", "가".repeat(300), null, null, "https://example.com/1");
         CollectedJob longUrl = new CollectedJob("2", "회사", "제목", null, null, "https://example.com/" + "a".repeat(500));
@@ -92,6 +98,7 @@ class JobStoreServiceTest {
     }
 
     @Test
+    @DisplayName("빈 입력이어도 수집 시각을 기록한다")
     void 빈_입력이어도_수집_시각을_기록한다() {
         service.store(List.of());
 

@@ -1,5 +1,6 @@
 package com.jobfeed.collect;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ class JobCollectorTest {
     }
 
     @Test
+    @DisplayName("키워드 결과를 합치고 중복과 제외어를 거른다")
     void 키워드_결과를_합치고_중복과_제외어를_거른다() {
         WorknetProperties props = props(List.of("개발", "IT"), 100, 5);
         FakeClient client = new FakeClient(props, Map.of(
@@ -53,6 +55,7 @@ class JobCollectorTest {
     }
 
     @Test
+    @DisplayName("기본 제외어는 실제 수집 결과의 오탐을 거르고 개발 공고는 남긴다")
     void 기본_제외어는_실제_수집_결과의_오탐을_거르고_개발_공고는_남긴다() {
         // 2026-11-11 실제 수집 결과 21건의 제목. 앞의 7건은 개발과 무관하고 나머지 14건은 남아야 한다.
         List<String> unrelated = List.of(
@@ -96,6 +99,7 @@ class JobCollectorTest {
     }
 
     @Test
+    @DisplayName("전체 건수까지 페이지를 넘겨 가져온다")
     void 전체_건수까지_페이지를_넘겨_가져온다() {
         WorknetProperties props = props(List.of("개발"), 2, 5);
         FakeClient client = new FakeClient(props, Map.of(
@@ -110,6 +114,7 @@ class JobCollectorTest {
     }
 
     @Test
+    @DisplayName("최대 페이지를 넘기지 않는다")
     void 최대_페이지를_넘기지_않는다() {
         WorknetProperties props = props(List.of("개발"), 1, 2);
         FakeClient client = new FakeClient(props, Map.of(
@@ -124,6 +129,7 @@ class JobCollectorTest {
     }
 
     @Test
+    @DisplayName("일부 키워드만 실패하면 나머지 결과를 돌려준다")
     void 일부_키워드만_실패하면_나머지_결과를_돌려준다() {
         WorknetProperties props = props(List.of("개발", "실패"), 100, 5);
         FakeClient client = new FakeClient(props, Map.of(
@@ -133,6 +139,7 @@ class JobCollectorTest {
     }
 
     @Test
+    @DisplayName("모든 키워드가 실패하면 예외를 던진다")
     void 모든_키워드가_실패하면_예외를_던진다() {
         WorknetProperties props = props(List.of("실패1", "실패2"), 100, 5);
         FakeClient client = new FakeClient(props, Map.of());

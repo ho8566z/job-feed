@@ -63,7 +63,7 @@ public class SendService {
         boolean stopped = false;
 
         for (SendLog sendLog : batch) {
-            if (attempted > 0 && !pause()) {
+            if (attempted > 0 && !canContinueAfterPause()) {
                 stopped = true;
                 break;
             }
@@ -100,7 +100,7 @@ public class SendService {
     }
 
     /** @return 계속해도 되면 true, 인터럽트되면 false */
-    private boolean pause() {
+    private boolean canContinueAfterPause() {
         long interval = properties.intervalMs();
         if (interval == 0) {
             return true;

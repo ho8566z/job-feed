@@ -1,6 +1,7 @@
 package com.jobfeed.collect;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WorknetLiveTest {
 
     @Test
+    @DisplayName("키워드 수집 결과 확인")
     void 키워드_수집_결과_확인() {
         WorknetProperties props = new WorknetProperties(
                 System.getenv("WORKNET_API_KEY"), null, null, null, null, null);

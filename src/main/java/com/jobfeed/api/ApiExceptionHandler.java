@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 내부 API 오류를 {"error": "..."} 형태로 돌려준다. 메시지에는 인증키·토큰이 들어가지 않는다.
  */
-@RestControllerAdvice(basePackageClasses = OpsController.class)
+@RestControllerAdvice(basePackageClasses = OpsApiController.class)
 @Slf4j
 public class ApiExceptionHandler {
 

@@ -1,6 +1,7 @@
 package com.jobfeed.collect;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("응답을 정규화한다")
     void 응답을_정규화한다() {
         WorknetClient.Page page = WorknetClient.parse(SAMPLE);
 
@@ -72,6 +74,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("Content Type에 charset이 없어도 한글이 깨지지 않는다")
     void Content_Type에_charset이_없어도_한글이_깨지지_않는다() {
         // charset 없는 application/xml. 문자열로 받으면 ISO-8859-1로 풀려 한글이 깨진다.
         server.expect(requestTo(containsString("empWantedTitle=")))
@@ -84,6 +87,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("오류 응답은 예외로 바꾼다")
     void 오류_응답은_예외로_바꾼다() {
         String error = "<?xml version='1.0' encoding='UTF-8'?><GO24><error>인증키가 존재하지 않습니다</error></GO24>";
 
@@ -93,6 +97,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("XML이 아니면 예외로 바꾼다")
     void XML이_아니면_예외로_바꾼다() {
         assertThatThrownBy(() -> WorknetClient.parse("<html>점검 중"))
                 .isInstanceOf(WorknetApiException.class);
@@ -101,6 +106,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("DOCTYPE이 있는 XML은 거부한다")
     void DOCTYPE이_있는_XML은_거부한다() {
         String xxe = "<?xml version=\"1.0\"?><!DOCTYPE a [<!ENTITY x \"y\">]><dhsOpenEmpInfoList/>";
 
@@ -109,6 +115,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("요청 URL은 키워드와 인증키를 인코딩한다")
     void 요청_URL은_키워드와_인증키를_인코딩한다() {
         String uri = client.buildUri("Back-end", 2).toString();
 
@@ -119,6 +126,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("조회 요청을 보내고 결과를 돌려준다")
     void 조회_요청을_보내고_결과를_돌려준다() {
         server.expect(requestTo(containsString("empWantedTitle=%EA%B0%9C%EB%B0%9C")))
                 .andExpect(method(HttpMethod.GET))
@@ -131,6 +139,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("서버 오류는 재시도 가능한 예외이고 인증키를 노출하지 않는다")
     void 서버_오류는_재시도_가능한_예외이고_인증키를_노출하지_않는다() {
         server.expect(requestTo(not(containsString("never"))))
                 .andRespond(withStatus(HttpStatus.BAD_GATEWAY));
@@ -143,6 +152,7 @@ class WorknetClientTest {
     }
 
     @Test
+    @DisplayName("인증키가 없으면 호출하지 않고 실패한다")
     void 인증키가_없으면_호출하지_않고_실패한다() {
         WorknetClient noKey = new WorknetClient(RestClient.create(),
                 new WorknetProperties("", null, null, null, null, null));

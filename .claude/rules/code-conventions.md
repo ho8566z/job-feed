@@ -60,3 +60,4 @@ paths:
 ## 7. 이 프로젝트(job-feed)의 예외
 - `SendService`는 생성자 안에서 `TransactionTemplate`을 만들기 때문에 `@RequiredArgsConstructor` 대신 생성자를 직접 쓴다(생성자 안에 로직이 있는 경우).
 - 스프링 테스트는 `src/test/resources/junit-platform.properties`의 `spring.test.constructor.autowire.mode=all` 설정으로 생성자 주입(`@RequiredArgsConstructor` + `private final`)을 쓴다. `@Autowired` 필드 주입은 쓰지 않는다.
+- `JobFeedScheduler`의 `log.error("…: {}", e.getMessage())`는 일부러 스택을 남기지 않는다. 원인 예외 체인에 인증키가 담긴 요청 URL이 들어갈 수 있기 때문이다(비밀값을 로그에 남기지 않는 규칙이 우선).

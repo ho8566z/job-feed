@@ -9,6 +9,7 @@ import com.jobfeed.notion.NotionProperties;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -101,6 +102,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("대기 공고를 오래된 순으로 보내고 성공을 기록한다")
     void 대기_공고를_오래된_순으로_보내고_성공을_기록한다() {
         seed("1", "2");
         FakeNotion notion = new FakeNotion(CONFIGURED).willReturn("page-1").willReturn("page-2");
@@ -115,6 +117,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("성공한 공고는 다시 보내지 않는다")
     void 성공한_공고는_다시_보내지_않는다() {
         seed("1");
         FakeNotion notion = new FakeNotion(CONFIGURED);
@@ -128,6 +131,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("한 번에 배치 크기만큼만 보낸다")
     void 한_번에_배치_크기만큼만_보낸다() {
         seed("1", "2", "3");
         FakeNotion notion = new FakeNotion(CONFIGURED);
@@ -139,6 +143,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("실패하면 횟수를 올리고 세 번째에 최종 실패로 바꾼다")
     void 실패하면_횟수를_올리고_세_번째에_최종_실패로_바꾼다() {
         seed("1");
         FakeNotion notion = new FakeNotion(CONFIGURED)
@@ -162,6 +167,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("한 건이 실패해도 나머지는 계속 보낸다")
     void 한_건이_실패해도_나머지는_계속_보낸다() {
         seed("1", "2");
         FakeNotion notion = new FakeNotion(CONFIGURED)
@@ -175,6 +181,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("속도 제한이면 멈추고 실패 횟수를 올리지 않는다")
     void 속도_제한이면_멈추고_실패_횟수를_올리지_않는다() {
         seed("1", "2");
         FakeNotion notion = new FakeNotion(CONFIGURED)
@@ -190,6 +197,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("인증 오류면 멈추고 실패 횟수를 올리지 않는다")
     void 인증_오류면_멈추고_실패_횟수를_올리지_않는다() {
         seed("1", "2");
         FakeNotion notion = new FakeNotion(CONFIGURED)
@@ -202,6 +210,7 @@ class SendServiceTest {
     }
 
     @Test
+    @DisplayName("노션 설정이 없으면 호출하지 않는다")
     void 노션_설정이_없으면_호출하지_않는다() {
         seed("1");
         NotionProperties empty = new NotionProperties("", "", null, null);
