@@ -56,3 +56,7 @@ paths:
 - 레벨: ERROR(사람이 봐야 하는 실패), WARN(실패했지만 재시도·복구 중), INFO(운영에 의미 있는 1회성 상태 변화), DEBUG(개발용 상세). 반복 처리는 INFO로 남기지 않는다.
 - 예외는 스택과 함께 한 곳에서 `log.error("…", e)`. 예상된 업무 예외는 스택 없이 WARN.
 - 남기지 않는 것: 비밀번호·토큰·API 키·세션 ID, 개인 정보, 요청·응답 본문 전체.
+
+## 7. 이 프로젝트(job-feed)의 예외
+- `SendService`는 생성자 안에서 `TransactionTemplate`을 만들기 때문에 `@RequiredArgsConstructor` 대신 생성자를 직접 쓴다(생성자 안에 로직이 있는 경우).
+- 스프링 테스트는 `src/test/resources/junit-platform.properties`의 `spring.test.constructor.autowire.mode=all` 설정으로 생성자 주입(`@RequiredArgsConstructor` + `private final`)을 쓴다. `@Autowired` 필드 주입은 쓰지 않는다.
