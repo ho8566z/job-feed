@@ -45,3 +45,6 @@ application-*.secret.yml
 /data/
 *.mv.db
 *.trace.db
+
+### Claude Code 개인 설정 ###
+.claude/settings.local.json
