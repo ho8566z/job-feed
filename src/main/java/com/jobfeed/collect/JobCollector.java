@@ -1,7 +1,6 @@
 package com.jobfeed.collect;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,9 +13,8 @@ import java.util.Map;
  * 저장과 중복 제거는 2.2에서 한다.
  */
 @Component
+@Slf4j
 public class JobCollector {
-
-    private static final Logger log = LoggerFactory.getLogger(JobCollector.class);
 
     private final WorknetClient client;
     private final WorknetProperties properties;

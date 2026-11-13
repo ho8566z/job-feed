@@ -3,7 +3,7 @@ package com.jobfeed.api;
 import com.jobfeed.collect.CollectService;
 import com.jobfeed.collect.JobStoreService;
 import com.jobfeed.sendlog.SendLog;
-import com.jobfeed.sendlog.SendLogRepository;
+import com.jobfeed.sendlog.SendLogQueryService;
 import com.jobfeed.sendlog.SendStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +32,11 @@ public class OpsController {
     static final int MAX_SIZE = 100;
 
     private final CollectService collectService;
-    private final SendLogRepository sendLogRepository;
+    private final SendLogQueryService sendLogQueryService;
 
-    public OpsController(CollectService collectService, SendLogRepository sendLogRepository) {
+    public OpsController(CollectService collectService, SendLogQueryService sendLogQueryService) {
         this.collectService = collectService;
-        this.sendLogRepository = sendLogRepository;
+        this.sendLogQueryService = sendLogQueryService;
     }
 
     public record SourceResult(String name, int fetched, int created, int duplicated) {
@@ -77,14 +76,9 @@ public class OpsController {
         pageSize = Math.min(pageSize, MAX_SIZE);
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<SendLog> result = status == null || status.isBlank()
-                ? sendLogRepository.findAll(pageable)
-                : sendLogRepository.findByStatus(parseStatus(status), pageable);
-
-        Map<String, Long> counts = new LinkedHashMap<>();
-        for (SendStatus s : SendStatus.values()) {
-            counts.put(s.name(), sendLogRepository.countByStatus(s));
-        }
+        Page<SendLog> result = sendLogQueryService.findLogs(
+                status == null || status.isBlank() ? null : parseStatus(status), pageable);
+        Map<String, Long> counts = sendLogQueryService.countByStatus();
         List<SendLogItem> items = result.getContent().stream()
                 .map(l -> new SendLogItem(l.getId(), l.getJob().getCompany(), l.getJob().getTitle(),
                         l.getStatus(), l.getRetryCount(), l.getLastError(), l.getNotionPageId()))
