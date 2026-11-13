@@ -76,7 +76,7 @@ class OpsApiTest {
     @BeforeEach
     void setUp() {
         collect = new FakeCollect();
-        mockMvc = MockMvcBuilders.standaloneSetup(new OpsController(collect, sendLogRepository))
+        mockMvc = MockMvcBuilders.standaloneSetup(new OpsController(collect, new com.jobfeed.sendlog.SendLogQueryService(sendLogRepository)))
                 .setControllerAdvice(new ApiExceptionHandler())
                 .build();
     }
