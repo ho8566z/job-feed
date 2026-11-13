@@ -8,10 +8,11 @@ import com.jobfeed.collect.WorknetApiException;
 import com.jobfeed.job.JobRepository;
 import com.jobfeed.sendlog.SendLogRepository;
 import com.jobfeed.source.SourceRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 내부 API(수동 수집, 전송 현황)를 H2 DB와 함께 확인한다. 수집 호출만 가짜로 바꾼다.
  */
 @SpringBootTest(properties = "app.scheduling.enabled=false")
+@RequiredArgsConstructor
 class OpsApiTest {
 
     /** run() 결과나 예외를 미리 정해 두는 가짜 수집 서비스 */
@@ -51,16 +53,11 @@ class OpsApiTest {
         }
     }
 
-    @Autowired
-    JobStoreService storeService;
-    @Autowired
-    SendLogRepository sendLogRepository;
-    @Autowired
-    JobRepository jobRepository;
-    @Autowired
-    SourceRepository sourceRepository;
-    @Autowired
-    PlatformTransactionManager transactionManager;
+    private final JobStoreService storeService;
+    private final SendLogRepository sendLogRepository;
+    private final JobRepository jobRepository;
+    private final SourceRepository sourceRepository;
+    private final PlatformTransactionManager transactionManager;
 
     private FakeCollect collect;
     private MockMvc mockMvc;
@@ -76,7 +73,7 @@ class OpsApiTest {
     @BeforeEach
     void setUp() {
         collect = new FakeCollect();
-        mockMvc = MockMvcBuilders.standaloneSetup(new OpsController(collect, sendLogRepository))
+        mockMvc = MockMvcBuilders.standaloneSetup(new OpsApiController(collect, new com.jobfeed.sendlog.SendLogQueryService(sendLogRepository)))
                 .setControllerAdvice(new ApiExceptionHandler())
                 .build();
     }
@@ -105,6 +102,7 @@ class OpsApiTest {
     // ---- POST /api/v1/collect ----
 
     @Test
+    @DisplayName("수동 수집은 조회 신규 중복 건수를 돌려준다")
     void 수동_수집은_조회_신규_중복_건수를_돌려준다() throws Exception {
         collect.result = new JobStoreService.StoreResult(5, 2);
 
@@ -117,6 +115,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("이미 수집 중이면 409")
     void 이미_수집_중이면_409() throws Exception {
         collect.error = new CollectInProgressException();
 
@@ -126,6 +125,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("수집이 실패하면 500과 원인을 돌려주고 인증키는 담지 않는다")
     void 수집이_실패하면_500과_원인을_돌려주고_인증키는_담지_않는다() throws Exception {
         collect.error = new WorknetApiException(502, "고용24 API 오류 502");
 
@@ -135,6 +135,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("인증키가 없으면 500과 안내 메시지")
     void 인증키가_없으면_500과_안내_메시지() throws Exception {
         collect.error = new IllegalStateException("WORKNET_API_KEY가 설정되지 않았습니다.");
 
@@ -146,6 +147,7 @@ class OpsApiTest {
     // ---- GET /api/v1/send-logs ----
 
     @Test
+    @DisplayName("전송 현황은 상태별 건수와 목록을 최신순으로 돌려준다")
     void 전송_현황은_상태별_건수와_목록을_최신순으로_돌려준다() throws Exception {
         seed(4);
 
@@ -168,6 +170,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("status로 걸러 볼 수 있다")
     void status로_걸러_볼_수_있다() throws Exception {
         seed(4);
 
@@ -181,6 +184,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("잘못된 status는 400")
     void 잘못된_status는_400() throws Exception {
         mockMvc.perform(get("/api/v1/send-logs").param("status", "DONE"))
                 .andExpect(status().isBadRequest())
@@ -188,6 +192,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("페이지 크기는 최대 100으로 제한하고 범위를 벗어난 값은 400")
     void 페이지_크기는_최대_100으로_제한하고_범위를_벗어난_값은_400() throws Exception {
         seed(3);
 
@@ -199,6 +204,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("페이지를 나눠 조회한다")
     void 페이지를_나눠_조회한다() throws Exception {
         seed(3);
 
@@ -210,6 +216,7 @@ class OpsApiTest {
     }
 
     @Test
+    @DisplayName("데이터가 없어도 건수는 0으로 돌려준다")
     void 데이터가_없어도_건수는_0으로_돌려준다() throws Exception {
         mockMvc.perform(get("/api/v1/send-logs"))
                 .andExpect(status().isOk())

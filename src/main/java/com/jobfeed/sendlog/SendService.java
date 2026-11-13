@@ -4,8 +4,7 @@ import com.jobfeed.job.Job;
 import com.jobfeed.notion.NotionApiException;
 import com.jobfeed.notion.NotionClient;
 import com.jobfeed.notion.NotionProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -19,9 +18,9 @@ import java.util.function.Consumer;
  * 노션 호출은 트랜잭션 밖에서 하고, 결과 기록만 건별 트랜잭션으로 한다.
  */
 @Service
+@Slf4j
 public class SendService {
 
-    private static final Logger log = LoggerFactory.getLogger(SendService.class);
     private static final int ERROR_LIMIT = 1000;
 
     private final SendLogRepository sendLogRepository;
@@ -64,7 +63,7 @@ public class SendService {
         boolean stopped = false;
 
         for (SendLog sendLog : batch) {
-            if (attempted > 0 && !pause()) {
+            if (attempted > 0 && !canContinueAfterPause()) {
                 stopped = true;
                 break;
             }
@@ -101,7 +100,7 @@ public class SendService {
     }
 
     /** @return 계속해도 되면 true, 인터럽트되면 false */
-    private boolean pause() {
+    private boolean canContinueAfterPause() {
         long interval = properties.intervalMs();
         if (interval == 0) {
             return true;

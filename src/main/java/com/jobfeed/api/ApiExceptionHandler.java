@@ -2,8 +2,7 @@ package com.jobfeed.api;
 
 import com.jobfeed.collect.CollectInProgressException;
 import com.jobfeed.collect.WorknetApiException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,10 +14,9 @@ import java.util.Map;
 /**
  * 내부 API 오류를 {"error": "..."} 형태로 돌려준다. 메시지에는 인증키·토큰이 들어가지 않는다.
  */
-@RestControllerAdvice(basePackageClasses = OpsController.class)
+@RestControllerAdvice(basePackageClasses = OpsApiController.class)
+@Slf4j
 public class ApiExceptionHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
     @ExceptionHandler(CollectInProgressException.class)
     public ResponseEntity<Map<String, String>> inProgress(CollectInProgressException e) {

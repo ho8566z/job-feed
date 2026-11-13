@@ -1,7 +1,7 @@
 package com.jobfeed.collect;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,17 +14,12 @@ import java.util.Map;
  * 저장과 중복 제거는 2.2에서 한다.
  */
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class JobCollector {
-
-    private static final Logger log = LoggerFactory.getLogger(JobCollector.class);
 
     private final WorknetClient client;
     private final WorknetProperties properties;
-
-    public JobCollector(WorknetClient client, WorknetProperties properties) {
-        this.client = client;
-        this.properties = properties;
-    }
 
     /**
      * 키워드 하나가 실패해도 나머지는 계속한다. 모든 키워드가 실패하면 마지막 오류를 던진다.

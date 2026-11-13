@@ -8,8 +8,8 @@ import com.jobfeed.sendlog.SendLogRepository;
 import com.jobfeed.source.Source;
 import com.jobfeed.source.SourceRepository;
 import com.jobfeed.source.SourceType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
  * 중복 판단 기준은 (source, external_id)이다.
  */
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class JobStoreService {
 
     public static final String SOURCE_NAME = "고용24 공채속보";
-
-    private static final Logger log = LoggerFactory.getLogger(JobStoreService.class);
 
     // job 테이블 컬럼 길이. 넘으면 저장이 실패하므로 미리 맞춘다.
     private static final int EXTERNAL_ID_MAX = 100;
@@ -39,13 +39,6 @@ public class JobStoreService {
     private final SourceRepository sourceRepository;
     private final JobRepository jobRepository;
     private final SendLogRepository sendLogRepository;
-
-    public JobStoreService(SourceRepository sourceRepository, JobRepository jobRepository,
-                           SendLogRepository sendLogRepository) {
-        this.sourceRepository = sourceRepository;
-        this.jobRepository = jobRepository;
-        this.sendLogRepository = sendLogRepository;
-    }
 
     /**
      * @param received 입력 건수

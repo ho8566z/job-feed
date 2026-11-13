@@ -2,6 +2,7 @@ package com.jobfeed.notion;
 
 import com.jobfeed.job.Job;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ class NotionClientTest {
     }
 
     @Test
+    @DisplayName("페이지 생성 요청 형식과 page id 반환")
     void 페이지_생성_요청_형식과_page_id_반환() {
         server.expect(requestTo("https://api.notion.com/v1/pages"))
                 .andExpect(method(HttpMethod.POST))
@@ -71,6 +73,7 @@ class NotionClientTest {
     }
 
     @Test
+    @DisplayName("지역과 마감일이 없으면 속성을 보내지 않는다")
     void 지역과_마감일이_없으면_속성을_보내지_않는다() {
         Job job = Job.builder().externalId("2").url("https://example.com/jobs/2").company("회사").title("직무").build();
 
@@ -80,6 +83,7 @@ class NotionClientTest {
     }
 
     @Test
+    @DisplayName("속도 제한 429는 재시도 가능한 실패")
     void 속도_제한_429는_재시도_가능한_실패() {
         server.expect(requestTo("https://api.notion.com/v1/pages"))
                 .andRespond(withStatus(HttpStatus.TOO_MANY_REQUESTS).body("rate limited"));
@@ -92,6 +96,7 @@ class NotionClientTest {
     }
 
     @Test
+    @DisplayName("속성 불일치 400은 재시도해도 소용없는 실패")
     void 속성_불일치_400은_재시도해도_소용없는_실패() {
         server.expect(requestTo("https://api.notion.com/v1/pages"))
                 .andRespond(withStatus(HttpStatus.BAD_REQUEST).body("{\"message\":\"지역 is not a property\"}"));
@@ -105,6 +110,7 @@ class NotionClientTest {
     }
 
     @Test
+    @DisplayName("응답에 id가 없으면 실패")
     void 응답에_id가_없으면_실패() {
         server.expect(requestTo("https://api.notion.com/v1/pages"))
                 .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
@@ -114,6 +120,7 @@ class NotionClientTest {
     }
 
     @Test
+    @DisplayName("토큰이 없으면 호출하지 않고 실패")
     void 토큰이_없으면_호출하지_않고_실패() {
         NotionClient unconfigured = new NotionClient(RestClient.create(), new NotionProperties("", "", null, null));
 
