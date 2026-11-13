@@ -1,5 +1,6 @@
 package com.jobfeed.collect;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 하루 호출 한도를 쓰므로 필요할 때만 실행한다. 인증키는 출력하지 않는다.
  */
 @EnabledIfEnvironmentVariable(named = "WORKNET_API_KEY", matches = ".+")
+@Slf4j
 class WorknetLiveTest {
 
     @Test
@@ -30,8 +32,8 @@ class WorknetLiveTest {
 
         List<CollectedJob> jobs = new JobCollector(client, props).collect();
 
-        System.out.println("수집 결과: " + jobs.size() + "건");
-        jobs.forEach(j -> System.out.println(" - " + j.company() + " | " + j.title() + " | ~" + j.deadline()));
+        log.info("수집 결과: {}건", jobs.size());
+        jobs.forEach(j -> log.info(" - {} | {} | ~{}", j.company(), j.title(), j.deadline()));
 
         assertThat(jobs).isNotEmpty();
         assertThat(jobs).allSatisfy(j -> {

@@ -1,6 +1,7 @@
 package com.jobfeed.notion;
 
 import com.jobfeed.job.Job;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
@@ -16,6 +17,7 @@ import java.util.Map;
  * 노션 공고 DB에 페이지(행)를 만든다. 속성 이름은 노션 DB와 정확히 일치해야 한다.
  * (회사=제목, 직무, 지역, 마감일, 수집일, 링크, 상태)
  */
+@RequiredArgsConstructor
 public class NotionClient {
 
     static final String PROP_COMPANY = "회사";
@@ -31,11 +33,6 @@ public class NotionClient {
 
     private final RestClient restClient;
     private final NotionProperties properties;
-
-    public NotionClient(RestClient restClient, NotionProperties properties) {
-        this.restClient = restClient;
-        this.properties = properties;
-    }
 
     /** @return 생성된 노션 페이지 ID (send_log.notion_page_id에 저장) */
     public String createPage(Job job) {

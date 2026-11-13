@@ -1,5 +1,6 @@
 package com.jobfeed.collect;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -28,6 +29,7 @@ import java.util.Map;
  * 응답에는 근무지역·직무 필드가 없어 region은 항상 null이다.
  */
 @Slf4j
+@RequiredArgsConstructor
 public class WorknetClient {
 
     private static final String ROOT_LIST = "dhsOpenEmpInfoList";
@@ -35,11 +37,6 @@ public class WorknetClient {
 
     private final RestClient restClient;
     private final WorknetProperties properties;
-
-    public WorknetClient(RestClient restClient, WorknetProperties properties) {
-        this.restClient = restClient;
-        this.properties = properties;
-    }
 
     /** 한 페이지 결과. total은 키워드에 해당하는 전체 건수 */
     public record Page(int total, List<CollectedJob> items) {

@@ -1,5 +1,6 @@
 package com.jobfeed.collect;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,16 +11,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 스케줄러와 수동 실행(API)이 겹치지 않도록 한 번에 하나만 실행한다.
  */
 @Service
+@RequiredArgsConstructor
 public class CollectService {
 
     private final JobCollector collector;
     private final JobStoreService storeService;
     private final AtomicBoolean running = new AtomicBoolean(false);
-
-    public CollectService(JobCollector collector, JobStoreService storeService) {
-        this.collector = collector;
-        this.storeService = storeService;
-    }
 
     /** @throws CollectInProgressException 이미 수집 중이면 */
     public JobStoreService.StoreResult run() {

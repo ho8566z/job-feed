@@ -13,10 +13,10 @@ import com.jobfeed.sendlog.SendLogRepository;
 import com.jobfeed.sendlog.SendService;
 import com.jobfeed.sendlog.SendStatus;
 import com.jobfeed.source.SourceRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +51,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
         "app.send.interval-ms=0",
         "app.send.batch-size=10"
 })
+@RequiredArgsConstructor
 class PipelineIntegrationTest {
 
     /** 호출 순서대로 응답을 지정하는 가짜 서버 두 개와 그에 묶인 클라이언트 */
@@ -90,18 +91,12 @@ class PipelineIntegrationTest {
         }
     }
 
-    @Autowired
-    Mocks mocks;
-    @Autowired
-    CollectService collectService;
-    @Autowired
-    SendService sendService;
-    @Autowired
-    JobRepository jobRepository;
-    @Autowired
-    SendLogRepository sendLogRepository;
-    @Autowired
-    SourceRepository sourceRepository;
+    private final Mocks mocks;
+    private final CollectService collectService;
+    private final SendService sendService;
+    private final JobRepository jobRepository;
+    private final SendLogRepository sendLogRepository;
+    private final SourceRepository sourceRepository;
 
     @BeforeEach
     @AfterEach
